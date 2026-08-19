@@ -2,7 +2,8 @@ export const formatDate = (date) => `Due: ${date.toLocaleDateString()}`;
 
 export const validateTask = (task = {}) => { const { title, dueDate } = task; return title && dueDate ? true : false; };
 
-export const mergeTaskUpdate = (originalTask, ...update) => ({...originalTask, ...update[0]} );
+export const mergeTaskUpdate = (originalTask, ...updates) =>
+  updates.reduce((merged, update) => ({ ...merged, ...update }), originalTask);
 
 export class TaskValidationError extends Error { constructor(message) { super(message); this.name = "TaskValidationError"; } }
 

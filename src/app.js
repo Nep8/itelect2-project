@@ -9,6 +9,7 @@ console.log(formatDate(new Date("2026-07-22")));
 console.log(validateTask({ title: "sample title", dueDate: "2026-07-22" }) );
 
 console.log(mergeTaskUpdate({ title: "old" },{ title: "new" }) );
+console.log(mergeTaskUpdate({ title: "Old", dueDate: "2026-01-01" }, { title: "New" }, { dueDate: "2026-12-25" }));
 
 console.log(fetchSampleUsers());
 
