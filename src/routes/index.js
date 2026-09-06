@@ -10,6 +10,15 @@ router.get('/tasks', (req, res) => {
     res.json(tasks);
 });
 
+router.get("/tasks/:id", (req, res) => {
+    const task = tasks.find((t) => t.id === parseInt(req.params.id));
+    if (task) {
+        res.json(task);
+    } else {
+        res.status(404).json({ error: "Task not found" });
+    }
+});
+
 router.post("/tasks", (req, res, next) => {
     if (!validateTask(req.body)) {
         const err = new Error("title and dueDate required");
