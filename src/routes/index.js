@@ -1,54 +1,48 @@
 import express from 'express';
-import { fetchSampleUsers } from '../api.js';
-import { tasks, validateTask, mergeTaskUpdate, createTask } from '../utils.js';
+import db from "../../models/index.cjs";
 
+const { User, Task } = db;
 const router = express.Router();
-let userCache = [];
-userCache = await fetchSampleUsers();
 
-router.get('/tasks', (req, res) => {
+router.get('/tasks', async (req, res) => {
+    const tasks = await Task.findAll({ include: User, order: [["id", "ASC"]] });
     res.json(tasks);
 });
 
-router.get("/tasks/:id", (req, res) => {
-    const task = tasks.find((t) => t.id === parseInt(req.params.id));
-    if (task) {
-        res.json(task);
-    } else {
-        res.status(404).json({ error: "Task not found" });
+router.get("/tasks/:id", async (req, res) => {
+    const task = await Task.findByPk(req.params.id, { include: User });
+    if (!task) {
+        return res.status(404).json({ error: "Task not found" });
     }
+    res.json(task);
 });
 
-router.post("/tasks", (req, res, next) => {
-    if (!validateTask(req.body)) {
-        const err = new Error("title and dueDate required");
-        err.status = 400;
-        return next(err);
-    }
-    const task = createTask(req.body);
-    tasks.push(task);
+router.post("/tasks", async (req, res) => {
+    const task = await Task.create(req.body);
     res.status(201).json(task);
 });
 
-router.put("/tasks/:id", (req, res) => {
-    const index = tasks.findIndex((t) => t.id === parseInt(req.params.id));
-    if (index === -1) {
+router.put("/tasks/:id", async (req, res) => {
+    const task = await Task.findByPk(req.params.id);
+    if (!task) {
         return res.status(404).json({ error: "Task not found" });
     }
-    tasks[index] = mergeTaskUpdate(tasks[index], req.body);
-    res.status(200).json(tasks[index]);
+    await task.update(req.body);
+    res.json(task);
 });
 
-router.delete("/tasks/:id", (req, res) => {
-    const index = tasks.findIndex((t) => t.id === parseInt(req.params.id));
-    if (index === -1) {
+router.delete("/tasks/:id", async (req, res) => {
+    const task = await Task.findByPk(req.params.id);
+    if (!task) {
         return res.status(404).json({ error: "Task not found" });
     }
-    const [removed] = tasks.splice(index, 1);
-    res.status(200).json({ message: "Deleted", task: removed });
+    await task.destroy();
+    res.json({ message: "Deleted", task });
 });
 
-router.get("/users", (req, res) => {
-    res.json(userCache);
+router.get("/users", async (req, res) => {
+    const users = await User.findAll();
+    res.json(users);
 });
+
 export default router;
