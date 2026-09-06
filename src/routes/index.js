@@ -51,5 +51,4 @@ router.delete("/tasks/:id", (req, res) => {
 router.get("/users", (req, res) => {
     res.json(userCache);
 });
-
 export default router;
