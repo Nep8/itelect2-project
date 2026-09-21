@@ -46,5 +46,3 @@ router.get("/users", async (req, res) => {
 });
 
 export default router; 
-
-// COMMENT
