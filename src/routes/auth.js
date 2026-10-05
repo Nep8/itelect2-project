@@ -2,10 +2,15 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import db from "../../models/index.cjs";
+import verifyToken from "../../middleware/verifyToken.js";
 
 const { User } = db;
 const router = express.Router();
 const SALT_ROUNDS = 10;
+
+router.get("/me", verifyToken, (req, res) => {
+  res.json({ user: req.user });
+});
 
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
