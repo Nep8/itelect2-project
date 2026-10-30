@@ -16,3 +16,6 @@ Screenshots of each endpoint test in postman
 
 ### DELETE /api/tasks/:id
 ![DELETE /api/tasks/:id](screenshots/DELETE.png)
+
+## DEPLOYMENT
+URL : https://itelect2-demo-library-2b52.onrender.com
